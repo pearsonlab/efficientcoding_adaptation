@@ -11,8 +11,6 @@ from scipy.io.matlab import loadmat
 from torch.utils.data import Dataset
 from tqdm import trange, tqdm
 
-from temporal import preset_temp
-
 
 def circular_mask(kernel_size: int):
     """
@@ -130,7 +128,6 @@ class FilteredVideoDataset(Dataset):
                  neural_type: Optional[str],
                  input_noise: Optional[float]):
 
-        self.temporal_filter = preset_temp(neural_type).reshape(-1, 1, 1)
         self.videos: List[Tuple[np.ndarray, float, float]] = []
         self.input_noise = input_noise
 
