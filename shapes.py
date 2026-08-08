@@ -35,12 +35,7 @@ class Shape(nn.Module):
 class DifferenceOfGaussianShape(Shape):
     def __init__(self, kernel_size, DoG_version, num_shapes=1):
         self.DoG_version = DoG_version
-        if self.DoG_version == 'color':
-            init_params = [-4.0, -7.0, 2.0]
-        elif self.DoG_version == 'claude':
-            init_params = [0.0,0.0,0.0]
-        else:
-            init_params = [-3,-0.9,2]
+        init_params = [-3,-0.9,2]
         super().__init__(kernel_size, init_params, num_shapes) #What the parameters are initialized to
 
     def shape_function(self, rr):
