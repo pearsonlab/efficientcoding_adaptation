@@ -21,7 +21,7 @@ To list all options, run:
 
 ## Data
 
-Because of the file size limit, the repo contains two small .npy files that contains a truncated video segment from one video from the dataset, which allows the training script to run but will not replicate the results in the paper. For the full replication, all videos except `butterfly*` from the [Chicago Motion Database](https://cmd.rcc.uchicago.edu/) need to be downloaded, converted to 512x512, 30fps videos, and extracted into numpy files of dtype uint8 that contain the luminocity channel in shape `(frames, height, width)`. The butterfly videos were excluded because they were out of the natural video distribution due to the insect screen (static & spatially narrow-band) and made optimization unstable. The per-video mean and standard deviation of pixels are precomputed in `stats.json` which is required for training.
+Because of the file size limit, the repo contains two small .npy files that contains a truncated video segment from one video from the dataset, which allows the training script to run but will not replicate the results in the paper. For the full replication, all images from the [Kyoto Natural Images Dataset](https://github.com/eizaburo-doi/kyoto_natim) need to be downloaded. 
 
 ## Files
 
@@ -29,7 +29,7 @@ Because of the file size limit, the repo contains two small .npy files that cont
 
 - `model.py`: `DiffExponentialShape` class is for the difference-of-exponential temporal RF parameterization. `Encoder` class implements the spatial linear filter, nonlinearity, and temporal convolutions, as well as ingredients to compute mutual information and firing rate constraint. `OutputMetrics` and `OutputTerms` classes combine the output values from the `Encoder` model, and `RetinaVAE` receives these metrics and then returns the objective value for the training loop.
 
-- `shapes.py`: includes various spatial kernel shape classes, but we only used `DifferenceOfGaussianShape` class for this particular research. 
+- `shapes.py`: includes various spatial kernel shape classes, but we only used `DifferenceOfGaussianShape` class for this particular research. DoG_version (parameter inherited from train.py) can either be `original` or `sigmoid_c`. The former is the version originally used in [1] and [2], while `sigmoid_c` is the version used in the current paper. 
 
 - `util.py`: includes utility methods such as tools to draw plots on tensorboard
 
