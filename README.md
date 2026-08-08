@@ -1,6 +1,7 @@
 # Efficient coding, channel capacity, and the emergence of retinal mosaics 
 
-This code is supplement to the NeurIPS 2022 paper "Efficient coding, channel capacity, and the emergence of retinal mosaics" [1].
+This code is supplement to the eLife 2026 paper "The functional organization of retinal ganglion cell receptive fields
+across light levels". The code is a functional branch of the code from the 2022 NeurIPS paper "Efficient coding, channel capacity, and the emergence of retinal mosaics" [1].
 
 ## Usage
 
@@ -28,14 +29,17 @@ Because of the file size limit, the repo contains two small .npy files that cont
 
 - `model.py`: `DiffExponentialShape` class is for the difference-of-exponential temporal RF parameterization. `Encoder` class implements the spatial linear filter, nonlinearity, and temporal convolutions, as well as ingredients to compute mutual information and firing rate constraint. `OutputMetrics` and `OutputTerms` classes combine the output values from the `Encoder` model, and `RetinaVAE` receives these metrics and then returns the objective value for the training loop.
 
-- `shapes.py`: includes various spatial kernel shape classes, but we only used `DifferenceOfGaussianShape` class for this particular research.
-
-- `temporal.py`: includes representative precomputed temporal kernel values to run the experiments in Supplementary Figure 3. 
+- `shapes.py`: includes various spatial kernel shape classes, but we only used `DifferenceOfGaussianShape` class for this particular research. 
 
 - `util.py`: includes utility methods such as tools to draw plots on tensorboard
 
 - `train.py`: the entrypoint of this project. It parses command line arguments and contains the main training loop. 
 
+- `train_batch.py`: calls train.py multiple times, over a series of input noise levels and number of neurons.
+
+ - `MosaicAnalysis.py`: Retrieves saved files (model.pt and checkpoint.pt) from train.py and infers properties of a single train.py run. This includes the the center surround ratio and RF size across neurons, as well as the typical receptive field of a mosaic.
+ 
+- `Fig10_maker.py`: Code used to make Figure 10 in the paper. It does so by calling a series of Analysis objects from MosaicAnalysis.py. 
 
 ## Reference
 
