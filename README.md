@@ -21,7 +21,7 @@ To list all options, run:
 
 ## Data
 
-Because of the file size limit, the repo contains two small .npy files that contains a truncated video segment from one video from the dataset, which allows the training script to run but will not replicate the results in the paper. For the full replication, all images from the [Kyoto Natural Images Dataset](https://github.com/eizaburo-doi/kyoto_natim) need to be downloaded. 
+Because of the file size limit, the repo contains two small .npy files that are part of the dataset, which allows the training script to run but will not replicate the results in the paper. For the full replication, all images from the [Kyoto Natural Images Dataset](https://github.com/eizaburo-doi/kyoto_natim) need to be downloaded. 
 
 ## Files
 
