@@ -54,13 +54,6 @@ class DifferenceOfGaussianShape(Shape):
             logitlogC = self.shape_params[2]
             logC = - (a - b) * max_r ** 2 * logitlogC.sigmoid()
             c = logC.exp()
-        elif self.DoG_version == 'color':
-            max_a = 100 #Center cannot be smaller than 1/max_a std. 
-            max_b = 100
-            b = logB.sigmoid() * max_b
-            a = b + logA.sigmoid() * max_a
-            
-            c = logitC.sigmoid() #to keep it within (0, 1)
             
         elif self.DoG_version == 'sigmoid_c':
             a = logA.exp()
@@ -68,76 +61,15 @@ class DifferenceOfGaussianShape(Shape):
             a = a + b  # make the center smaller than the surround
             c = logitC.sigmoid() #to keep it within (0, 1)
         
-        elif self.DoG_version == 'claude':
-            def f(rr, gamma, rho, psi):
-            
-                sigma_psi = 1.0 / (1.0 + torch.exp(-psi))  # sigmoid(psi)
-            
-                term1 = torch.exp(-(rr**2) / (2.0 * torch.exp(2.0 * gamma)))
-                term2 = sigma_psi * torch.exp(
-                    -(rr**2) / (2.0 * torch.exp(2.0 * gamma) * (1.0 + torch.exp(rho))**2)
-                )
-                return term1 - term2
-            
-            a,b,c = self.shape_params
-            self.a, self.b, self.c = a.detach(), b.detach(), c.detach()
-            return f(rr,a,b,c)
-
 
         self.a, self.b, self.c = a.detach(), b.detach(), c.detach()
 
-        #if self.shape_params.shape[-1] == 2:
-        #    a = torch.cat([a[:1].repeat(14), a[1:].repeat(6)])
-        #    b = torch.cat([b[:1].repeat(14), b[1:].repeat(6)])
-        #    c = torch.cat([c[:1].repeat(14), c[1:].repeat(6)])
-        #print(a.shape, b.shape, c.shape, rr.shape)
         return torch.exp(-a * rr) - c*torch.exp(-b * rr)
 
-
-class GaussianShape(Shape):
-    def __init__(self, kernel_size, num_shapes=1):
-        super().__init__(kernel_size, [-0.75], num_shapes)
-
-    def shape_function(self, rr):
-        self.a = self.shape_params.exp()
-        return torch.exp(-self.a * rr)
-
-
-class DifferenceOfTDistributionShape(Shape):
-    def __init__(self, kernel_size, num_shapes=1):
-        super().__init__(kernel_size, [-3, -0.9, 0], num_shapes)
-
-    def shape_function(self, rr):
-        logA, logB, logitlogC = self.shape_params
-        a = logA.exp()
-        b = logB.exp()
-        a = a + b  # make the center smaller than the surround
-        max_r = self.kernel_size // 4
-        logitlogC = self.shape_params[2]
-        logC = - (a - b) * max_r ** 2 * logitlogC.sigmoid()  #to keep it within (0, 1)
-        c = logC.exp()
-        self.a, self.b, self.c = a.detach(), b.detach(), c.detach()
-        nu = 1
-        return (1 + a * rr / nu) ** (-(nu + 1) / 2) - c * (1 + b * rr / nu) ** (-(nu + 1) / 2)
-
-
-class SingleTDistribution(Shape):
-    def __init__(self, kernel_size, num_shapes=1):
-        super().__init__(kernel_size, [-3], num_shapes)
-
-    def shape_function(self, rr):
-        logA = self.shape_params
-        a = logA.exp()
-        self.a = a.detach()
-        nu = 2
-        return (1 + a * rr / nu) ** (-(nu + 1) / 2)
 
 
 def get_shape_module(type):
     return {
         'difference-of-gaussian': DifferenceOfGaussianShape,
-        'gaussian': GaussianShape,
-        'difference-of-t': DifferenceOfTDistributionShape,
-        'single-t': SingleTDistribution,
     }[type]
 
